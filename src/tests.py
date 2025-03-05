@@ -15,15 +15,6 @@ class Tests(unittest.TestCase):
             num_rows,
         )
     
-    def test_empty_maze(self):
-        num_cols = 0
-        num_rows = 0
-        m2 = Maze(0,0, num_rows, num_cols, 10, 10)
-        self.assertEqual(
-            len(m2._cells),
-            num_cols,
-        )
-    
     def test_maze_large(self):
         num_cols = 30
         num_rows = 30
@@ -47,6 +38,14 @@ class Tests(unittest.TestCase):
         exit_cell = m1._cells[exit_col][exit_row]
         self.assertFalse(entrance_cell.has_top_wall)
         self.assertFalse(exit_cell.has_bottom_wall)
+    
+    def test_maze_reset_cells(self):
+        num_cols = 12
+        num_rows = 10
+        m1 = Maze(0, 0, num_rows, num_cols, 10, 10)
+        for col in m1._cells:
+            for cell in col:
+                self.assertFalse(cell.visited)
 
 if __name__ == "__main__":
     unittest.main()

@@ -27,6 +27,7 @@ class Maze:
         self._create_cells()
         self._break_entrance_and_exit()
         self._break_walls_r(0,0)
+        self._reset_cells_visited()
     
     def _create_cells(self):
         self._cells = [[Cell(self._win) for j in range(self._num_rows)] for i in range(self._num_cols)]
@@ -95,18 +96,8 @@ class Maze:
         if next_j == cur_j - 1:
             self._cells[cur_i][cur_j].has_top_wall = False
             self._cells[cur_i][next_j].has_bottom_wall = False
-
-
-        '''
-        def depth_first_search(self, start_vertex):
-            visited = []
-            self.depth_first_search_r(visited, start_vertex)
-            return visited
-
-        def depth_first_search_r(self, visited, current_vertex):
-            visited.append(current_vertex)
-            sorted_neighbors = sorted(self.graph[current_vertex])
-            for neighbor in sorted_neighbors:
-                if neighbor not in visited:
-                    self.depth_first_search_r(visited, neighbor)
-                '''
+    
+    def _reset_cells_visited(self):
+        for i in range(self._num_cols):
+            for j in range(self._num_rows):
+                self._cells[i][j].visited = False
