@@ -17,18 +17,18 @@ class Cell:
         self._y1 = y1
         self._x2 = x2
         self._y2 = y2
-        if self.has_left_wall:
-            line = Line(Point(x1, y1), Point(x1, y2))
-            self._win.draw_line(line)
-        if self.has_top_wall:
-            line = Line(Point(x1, y1), Point(x2, y1))
-            self._win.draw_line(line)
-        if self.has_right_wall:
-            line = Line(Point(x2, y1), Point(x2, y2))
-            self._win.draw_line(line)
-        if self.has_bottom_wall:
-            line = Line(Point(x1, y2), Point(x2, y2))
-            self._win.draw_line(line)
+        fill_color = "white"
+        
+        walls = [
+            (self.has_left_wall, Line(Point(x1, y1), Point(x1, y2))),
+            (self.has_top_wall, Line(Point(x1, y1), Point(x2, y1))),
+            (self.has_right_wall, Line(Point(x2, y1), Point(x2, y2))),
+            (self.has_bottom_wall, Line(Point(x1, y2), Point(x2, y2)))
+        ]
+
+        for has_wall, wall in walls:
+            self._win.draw_line(wall, fill_color if not has_wall else None)
+        
     
     def draw_move(self, to_cell, undo=False):
         self_center = Point(
