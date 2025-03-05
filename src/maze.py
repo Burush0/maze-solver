@@ -1,5 +1,5 @@
 from cell import Cell
-import time
+import time, random
 
 class Maze:
     def __init__(
@@ -11,6 +11,7 @@ class Maze:
         cell_size_x,
         cell_size_y,
         win=None,
+        seed=None,
     ):
         self._cells = []
         self._x1 = x1
@@ -20,9 +21,12 @@ class Maze:
         self._cell_size_x = cell_size_x
         self._cell_size_y = cell_size_y
         self._win = win
+        if seed:
+            random.seed(seed)
 
         self._create_cells()
         self._break_entrance_and_exit()
+        self._break_walls_r(0,0)
     
     def _create_cells(self):
         self._cells = [[Cell(self._win) for j in range(self._num_rows)] for i in range(self._num_cols)]
@@ -44,7 +48,7 @@ class Maze:
         if self._win is None:
             return
         self._win.redraw()
-        time.sleep(0.05)
+        time.sleep(0.01)
     
     def _break_entrance_and_exit(self):
         if len(self._cells) != 0:
@@ -54,3 +58,55 @@ class Maze:
             exit_row = self._num_rows - 1
             self._cells[exit_col][exit_row].has_bottom_wall = False
             self._draw_cell(exit_col, exit_row)
+    
+    def _break_walls_r(self, i, j):
+        self._cells[i][j].visited = True
+        while True:
+            to_visit = []
+            if i > 0 and not self._cells[i - 1][j].visited:
+                to_visit.append((i - 1, j))
+            if i < self._num_cols - 1 and not self._cells[i + 1][j].visited:
+                to_visit.append((i + 1, j))
+            if j > 0 and not self._cells[i][j - 1].visited:
+                to_visit.append((i, j - 1))
+            if j < self._num_rows - 1 and not self._cells[i][j + 1].visited:
+                to_visit.append((i, j + 1))
+            if len(to_visit) == 0:
+                self._draw_cell(i, j)
+                return
+            
+            direction = random.randrange(len(to_visit))
+            to_cell = to_visit[direction]
+            next_i, next_j = to_cell
+            self._break_wall_between(i, j, next_i, next_j)
+            self._break_walls_r(next_i, next_j) 
+
+    
+    def _break_wall_between(self, cur_i, cur_j, next_i, next_j):
+        if next_i == cur_i + 1:
+            self._cells[cur_i][cur_j].has_right_wall = False
+            self._cells[next_i][cur_j].has_left_wall = False
+        if next_i == cur_i - 1:
+            self._cells[cur_i][cur_j].has_left_wall = False
+            self._cells[next_i][cur_j].has_right_wall = False
+        if next_j == cur_j + 1:
+            self._cells[cur_i][cur_j].has_bottom_wall = False
+            self._cells[cur_i][next_j].has_top_wall = False
+        if next_j == cur_j - 1:
+            self._cells[cur_i][cur_j].has_top_wall = False
+            self._cells[cur_i][next_j].has_bottom_wall = False
+
+
+        '''
+        def depth_first_search(self, start_vertex):
+            visited = []
+            self.depth_first_search_r(visited, start_vertex)
+            return visited
+
+        def depth_first_search_r(self, visited, current_vertex):
+            visited.append(current_vertex)
+            sorted_neighbors = sorted(self.graph[current_vertex])
+            for neighbor in sorted_neighbors:
+                if neighbor not in visited:
+                    self.depth_first_search_r(visited, neighbor)
+                '''

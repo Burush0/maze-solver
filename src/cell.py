@@ -6,6 +6,7 @@ class Cell:
         self.has_right_wall = True
         self.has_top_wall = True
         self.has_bottom_wall = True
+        self.visited = False
         self._x1 = None
         self._y1 = None
         self._x2 = None
@@ -18,7 +19,7 @@ class Cell:
         self._x2 = x2
         self._y2 = y2
         fill_color = "white"
-        
+
         walls = [
             (self.has_left_wall, Line(Point(x1, y1), Point(x1, y2))),
             (self.has_top_wall, Line(Point(x1, y1), Point(x2, y1))),
